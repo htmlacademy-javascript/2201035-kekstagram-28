@@ -1,44 +1,45 @@
 //1.
-let checkLength = function (string, limitLength) {
+const checkLength = function (string, limitLength) {
   if (String(string).length <= limitLength) {
     return true;
   } else {
     return false;
   }
-}
+};
 
 //2.
 
-let checkPalindrome = function (string) {
-  let noSpaceString = String(string).replaceAll(' ', '');
-  let reversedString = noSpaceString.split('').reverse().join('');
+const checkPalindrome = function (string) {
+  const noSpaceString = String(string).replaceAll(' ', '');
+  const reversedString = noSpaceString.split('').reverse().join('');
   if (reversedString === noSpaceString) {
     return true;
   } else {
     return false;
   }
-}
+};
 
 //3.
 
-let getNumbers = function (data) {
+const getNumbers = function (data) {
   let numbers = '';
   let currentNumber = '';
-  let string = String(data);
+  const string = String(data);
   for (let i = 0; i < string.length; i++) {
-    if (parseInt (string[i]) === parseInt(string[i])) {
+    if (parseInt (string[i], 10) === parseInt(string[i], 10)) {
       currentNumber = numbers + string[i];
     }
-    numbers = parseInt(currentNumber);
+    numbers = currentNumber;
   }
-  return numbers;
-}
+  const result = parseInt(numbers,10);
+  return result;
+};
 
 //4.
 
-let getNewString = function (data, length, extraData) {
-  let string = String(data);
-  let extraString = String(extraData);
+const getNewString = function (data, length, extraData) {
+  const string = String(data);
+  const extraString = String(extraData);
   let newString = '';
   if (length >= string.length) {
     newString = string;
@@ -56,6 +57,13 @@ let getNewString = function (data, length, extraData) {
         }
       }
     }
-  } else {newString = string}
+  } else {
+    newString = string;
+  }
   return newString;
-}
+};
+
+checkLength('fsdfs', 10);
+checkPalindrome('abcddcba');
+getNumbers('a1b2c3');
+getNewString('abc',10, '12345');
