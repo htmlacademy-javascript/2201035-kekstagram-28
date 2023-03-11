@@ -28,7 +28,7 @@ const descriptions = [
   'Волка давно не кормят ноги, волка кормит чайхана'
 ];
 
-const comments = [
+const commentSentences = [
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра.',
   'Как можно было поймать такой неудачный момент?!',
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
@@ -44,8 +44,12 @@ const maxLikesValue = 200;
 const minLikesValue = 15;
 const maxAvatarLinkValue = 6;
 const minAvatarLinkValue = 1;
-const maxCommentsValue = comments.length;
-const minCommentsValue = 1;
+const maxSentencesValue = commentSentences.length;
+const minSentencesValue = 1;
+const maxCommentIdValue = 500;
+const minCommentIdValue = 1;
+const maxCommentsNumberValue = 10;
+const minCommentsNumberValue = 1;
 
 const getRandomNumber = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -55,10 +59,44 @@ const getRandomNumber = (a, b) => {
 };
 
 const getRandomArrayElement = (elements) => elements[getRandomNumber(0, elements.length - 1)];
+
+const generateComments = () => {
+  const usedCommentIds = [];
+  return () => {
+    let currentCommentId = getRandomNumber(minCommentIdValue,maxCommentIdValue);
+    while (usedCommentIds.includes(currentCommentId)) {
+      currentCommentId = getRandomNumber(minCommentIdValue,maxCommentIdValue);
+    }
+    usedCommentIds.push(currentCommentId);
+    let currentMessage = '';
+    const sentencesNumber = getRandomNumber(minSentencesValue,maxSentencesValue);
+    const usedComments = [];
+    let commentIndex;
+    for (let i = 1;i <= sentencesNumber;i++) {
+      commentIndex = getRandomNumber(0, commentSentences.length - 1);
+      while(usedComments.includes(commentIndex)) {
+        commentIndex = getRandomNumber(0, commentSentences.length - 1);
+      }
+      currentMessage += commentSentences[commentIndex];
+      if(i !== sentencesNumber) {
+        currentMessage += ' ';
+      }
+      usedComments.push(commentIndex);
+    }
+    return {
+      id: currentCommentId,
+      avatar: `img/avatar-${ getRandomNumber(minAvatarLinkValue, maxAvatarLinkValue) }.svg`,
+      message: currentMessage,
+      name: getRandomArrayElement(names),
+    };
+  };
+};
+
+const createComment = generateComments();
+
 const generatePersonalDetails = function () {
   const usedIds = [];
   const usedUrls = [];
-  const usedCommentIDs = [];
   return function () {
     let currentID = getRandomNumber(minIdValue,maxIdValue);
     let currentUrlNumber = getRandomNumber(minUrlValue,maxUrlValue);
@@ -70,38 +108,17 @@ const generatePersonalDetails = function () {
       currentUrlNumber = getRandomNumber(minUrlValue,maxUrlValue);
     }
     usedUrls.push(currentUrlNumber);
-    let currentComment = '';
-    const commentsNumber = getRandomNumber(minCommentsValue,maxCommentsValue);
-    const usedComments = [];
-    let commentIndex;
-    for (let i = 1;i <= commentsNumber;i++) {
-      commentIndex = getRandomNumber(0, comments.length - 1);
-      while(usedComments.includes(commentIndex)) {
-        commentIndex = getRandomNumber(0, comments.length - 1);
-      }
-      currentComment += comments[commentIndex];
-      if(i !== commentsNumber) {
-        currentComment += ' ';
-      }
-      usedComments.push(commentIndex);
-    }
-    let currentCommentID = getRandomNumber(1, 999999);
-    while (usedCommentIDs.includes(currentCommentID)) {
-      currentCommentID = getRandomNumber(1, 999999);
-    }
-    usedCommentIDs.push(currentCommentID);
+    const commentsNumber = getRandomNumber(minCommentsNumberValue, maxCommentsNumberValue);
+    const comments = Array.from({length:commentsNumber}, createComment);
     return {
-      name: getRandomArrayElement(names),
       description: getRandomArrayElement(descriptions),
       id: currentID,
       url: `photos/${ currentUrlNumber }.jpg`,
       likes: getRandomNumber(minLikesValue, maxLikesValue),
-      message: currentComment,
-      commentID: currentCommentID,
-      avatar: `img/avatar-${ getRandomNumber(minAvatarLinkValue, maxAvatarLinkValue) }.svg`
+      comments:comments
     };
   };
 };
+
 const createPersonalDetails = generatePersonalDetails();
 Array.from({length:25}, createPersonalDetails);
-
