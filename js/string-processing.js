@@ -63,7 +63,4 @@ const getNewString = function (data, length, extraData) {
   return newString;
 };
 
-checkLength('fsdfs', 10);
-checkPalindrome('abcddcba');
-getNumbers('a1b2c3');
-getNewString('abc',10, '12345');
+export {checkLength, checkPalindrome, getNumbers, getNewString};
