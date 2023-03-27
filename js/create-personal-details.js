@@ -112,5 +112,7 @@ const createPersonalDetails = function () {
     };
   };
 };
+
 const personalDetails = Array.from({length:25}, createPersonalDetails());
+
 export {personalDetails};
