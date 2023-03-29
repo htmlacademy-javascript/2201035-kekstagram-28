@@ -1,4 +1,5 @@
 import {checkLength, checkPalindrome, getNumbers, getNewString} from './string-processing.js';
+
 import {createPhotos} from './create-photos.js';
 import './big-picture-display.js';
 

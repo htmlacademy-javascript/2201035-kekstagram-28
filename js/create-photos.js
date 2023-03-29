@@ -13,6 +13,7 @@ personalDetails.forEach((currentDetails) => {
   currentImg.src = currentDetails.url;
   currentLikes.textContent = currentDetails.likes;
   currentCommentNumber.textContent = currentDetails.comments.length;
+
   photosFragment.append(currentPhoto);
 }
 );
@@ -20,5 +21,6 @@ personalDetails.forEach((currentDetails) => {
 const createPhotos = function () {
   photosContainer.append(photosFragment);
 };
+
 
 export{createPhotos, photosContainer};
