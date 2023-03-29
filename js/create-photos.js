@@ -1,6 +1,5 @@
-import { createPersonalDetails } from './create-personal-details.js';
+import { personalDetails } from './create-personal-details.js';
 
-const personalDetails = Array.from({length:25}, createPersonalDetails());
 const photoTemplate = document.querySelector('#picture').content;
 const photosFragment = document.createDocumentFragment();
 const photosContainer = document.querySelector('.pictures');
@@ -23,4 +22,5 @@ const createPhotos = function () {
   photosContainer.append(photosFragment);
 };
 
-export{createPhotos};
+
+export{createPhotos, photosContainer};

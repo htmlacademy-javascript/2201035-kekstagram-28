@@ -113,4 +113,6 @@ const createPersonalDetails = function () {
   };
 };
 
-export {createPersonalDetails};
+const personalDetails = Array.from({length:25}, createPersonalDetails());
+
+export {personalDetails};
