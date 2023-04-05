@@ -239,6 +239,8 @@ function onUploadedPhotoClose () {
   scaleControlPlus.removeEventListener('click', onPlusClick);
   effectsList.removeEventListener('change', onEffectPick);
   uploadedPhotoPreview.className = '';
+  uploadedPhotoPreview.style.filter = '';
+  uploadedPhotoPreview.style.transform = '';
   if(effectSlider.noUiSlider) {
     effectSlider.noUiSlider.destroy();
   }
