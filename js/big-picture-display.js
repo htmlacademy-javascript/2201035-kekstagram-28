@@ -1,4 +1,4 @@
-import { personalDetails } from './create-personal-details.js';
+import { personalDetails } from './data-exchange.js';
 import { photosContainer } from './create-photos.js';
 
 const bigPictureContainer = document.querySelector('.big-picture');
