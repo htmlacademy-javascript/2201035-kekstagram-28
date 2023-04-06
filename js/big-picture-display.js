@@ -1,5 +1,6 @@
 import { personalDetails } from './data-exchange.js';
 import { photosContainer } from './create-photos.js';
+import { addClass } from './utils.js';
 
 const bigPictureContainer = document.querySelector('.big-picture');
 const socialComment = bigPictureContainer.querySelector('.social__comment');
@@ -93,10 +94,10 @@ const onPictureClick = function (evt) {
 
   if (pictureDetails.comments.length > commentDisplayStep){
     commentsLoader.classList.remove('hidden');
+  } else {
+    addClass(commentsLoader, 'hidden');
   }
-
   onBigPictureOpen();
 };
 
-commentsLoader.classList.add('hidden');
 photosContainer.addEventListener('click', onPictureClick);
