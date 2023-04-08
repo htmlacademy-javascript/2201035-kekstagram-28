@@ -1,5 +1,6 @@
 import { getNumbers } from './string-processing.js';
 import { addClass, getValueFromBrackets } from './utils.js';
+import {sendFormData} from './data-exchange.js';
 
 const form = document.querySelector('.img-upload__form');
 const uploadControl = form.querySelector('#upload-file');
@@ -7,7 +8,7 @@ const uploadedPhotoContainer = form.querySelector('.img-upload__overlay');
 const uploadedPhotoPreview = uploadedPhotoContainer.querySelector('.img-upload__preview').querySelector('img');
 const effectsPreview = uploadedPhotoContainer.querySelectorAll('.effects__preview');
 const body = document.body;
-const buttonClose = uploadedPhotoContainer.querySelector('.img-upload__cancel');
+const buttonClose = uploadedPhotoContainer.querySelector('#upload-cancel');
 const hashtagInput = form.querySelector('.text__hashtags');
 const commentInput = form.querySelector('.text__description');
 const scaleControlMinus = form.querySelector ('.scale__control--smaller');
@@ -17,6 +18,8 @@ const effectLevelContainer = form.querySelector('.img-upload__effect-level');
 const effectSlider = effectLevelContainer.querySelector('.effect-level__slider');
 const effectValue = effectLevelContainer.querySelector('.effect-level__value');
 const effectsList = form.querySelector('.effects__list');
+const effectNone = effectsList.querySelector('#effect-none');
+const submitButton = form.querySelector('#upload-submit');
 
 const sliderSettings = {
   chrome: {
@@ -136,12 +139,6 @@ function validateHashtags (value) {
 
 pristine.addValidator(hashtagInput,validateHashtags);
 
-function onFormSubmit (evt) {
-  if (!pristine.validate()) {
-    evt.preventDefault();
-  }
-}
-
 function onMinusClick () {
   const actualScaleValue = getNumbers(scaleValue.value) - 25;
   if (actualScaleValue < 25) {
@@ -207,9 +204,22 @@ function onEffectPick (evt) {
   });
 }
 
+function onFormSubmit (evt) {
+  evt.preventDefault();
+  if (!pristine.validate()) {
+    return;
+  }
+  submitButton.disabled = true;
+  sendFormData(new FormData(evt.target));
+  submitButton.disabled = false;
+}
+
 function onUploadedPhotoEscape (evt) {
   if (evt.key === 'Escape') {
     if (hashtagInput === document.activeElement || commentInput === document.activeElement) {
+      return;
+    }
+    if (body.querySelector('.error')) {
       return;
     }
     evt.preventDefault();
@@ -241,6 +251,11 @@ function onUploadedPhotoClose () {
   uploadedPhotoPreview.className = '';
   uploadedPhotoPreview.style.filter = '';
   uploadedPhotoPreview.style.transform = '';
+  scaleValue.value = '100%';
+  hashtagInput.value = '';
+  commentInput.value = '';
+  uploadControl.value = '';
+  effectNone.checked = true;
   if(effectSlider.noUiSlider) {
     effectSlider.noUiSlider.destroy();
   }
@@ -255,3 +270,5 @@ function onPhotoUpload () {
 }
 
 uploadControl.addEventListener('change', onPhotoUpload);
+
+export {onUploadedPhotoClose};
