@@ -30,5 +30,28 @@ const getValueFromBrackets = function (string) {
   }
 };
 
+function shuffle (array) {
+  let m = array.length, t, i;
 
-export {getRandomArrayElement, getRandomNumber, addClass, getValueFromBrackets};
+  while (m) {
+
+    i = Math.floor(Math.random() * m--);
+
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+
+  return array;
+}
+
+function debounce (callback, timeoutDelay = 500) {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
+export {getRandomArrayElement, getRandomNumber, addClass, getValueFromBrackets, shuffle, debounce};

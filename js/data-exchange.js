@@ -1,4 +1,4 @@
-import {createPhotos} from './create-photos.js';
+import {createPhotos, addPhotosFilters} from './create-photos.js';
 import { onUploadedPhotoClose } from './form-processing.js';
 
 let personalDetails;
@@ -71,7 +71,8 @@ function downloadPhotos () {
     })
     .then((data)=>{
       personalDetails = data;
-      createPhotos(data);
+      createPhotos(personalDetails);
+      addPhotosFilters();
     })
     .catch((error)=>{
       onDownloadPhotoErorr(error);

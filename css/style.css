@@ -710,6 +710,16 @@ main {
   border-radius: 5px;
 }
 
+.hashtag__error {
+display :block;
+font-size: 0.8em;
+color:red;
+text-transform: none;
+width: 80%;
+text-align: center;
+margin:auto;
+margin-top:-20px;
+}
 
 /**
  * Кнопка для отправки изображения
