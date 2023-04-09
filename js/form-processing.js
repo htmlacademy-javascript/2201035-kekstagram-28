@@ -20,6 +20,7 @@ const effectValue = effectLevelContainer.querySelector('.effect-level__value');
 const effectsList = form.querySelector('.effects__list');
 const effectNone = effectsList.querySelector('#effect-none');
 const submitButton = form.querySelector('#upload-submit');
+const fileTypes = ['jpg', 'jpeg', 'png'];
 
 const sliderSettings = {
   chrome: {
@@ -104,31 +105,26 @@ const sliderSettings = {
   }
 };
 
-const pristine = new Pristine(form);
+const pristine = new Pristine(form, {
+  classTo: 'img-upload__field-wrapper',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextTag: 'span',
+  errorTextClass: 'hashtag__error'
+});
 
-function validateHashtags (value) {
+function validateHashtagsReg (value) {
   if (value === '') {
     return true;
   }
 
   const hashtagReg = /^#[a-zа-яё0-9]{1,19}$/i;
   const hashtagArray = value.split(' ');
-
-  if (hashtagArray.length > 5) {
-    return false;
-  }
-
   let isArrayValid = true;
-  const usedHashtags = [];
 
   hashtagArray.forEach((hashtag)=>{
     if(!hashtagReg.test(hashtag)) {
       isArrayValid = false;
     }
-    if(usedHashtags.includes(hashtag.toLowerCase())){
-      isArrayValid = false;
-    }
-    usedHashtags.push(hashtag.toLowerCase());
   });
 
   if (!isArrayValid) {
@@ -137,7 +133,44 @@ function validateHashtags (value) {
   return true;
 }
 
-pristine.addValidator(hashtagInput,validateHashtags);
+function validateHashtagsQty (value) {
+  if (value === '') {
+    return true;
+  }
+  const hashtagArray = value.split(' ');
+
+  if (hashtagArray.length > 5) {
+    return false;
+  }
+  return true;
+}
+
+function validateHashtagsUniqueness (value) {
+  if (value === '') {
+    return true;
+  }
+  const usedHashtags = [];
+  const hashtagArray = value.split(' ');
+  let isArrayValid = true;
+
+  hashtagArray.forEach((hashtag)=>{
+
+    if(usedHashtags.includes(hashtag.toLowerCase())){
+      if (hashtag !== ''){
+        isArrayValid = false;
+      }
+    }
+    usedHashtags.push(hashtag.toLowerCase());
+  });
+  if (!isArrayValid) {
+    return false;
+  }
+  return true;
+}
+
+pristine.addValidator(hashtagInput,validateHashtagsReg, 'Хэштэги начинаются с #, не содержат спецсимволы и не превышают 20 символов, разделены одним пробелом');
+pristine.addValidator(hashtagInput,validateHashtagsQty, 'Не более 5 хэштэгов');
+pristine.addValidator(hashtagInput,validateHashtagsUniqueness, 'Хэштэги не должны повторяться');
 
 function onMinusClick () {
   const actualScaleValue = getNumbers(scaleValue.value) - 25;
@@ -262,6 +295,10 @@ function onUploadedPhotoClose () {
 }
 
 function onPhotoUpload () {
+  const matches = fileTypes.some((it) => uploadControl.files[0].name.toLowerCase().endsWith(it));
+  if(!matches) {
+    return;
+  }
   uploadedPhotoPreview.src = URL.createObjectURL(uploadControl.files[0]);
   effectsPreview.forEach((element)=>{
     element.style.backgroundImage = `url(${URL.createObjectURL(uploadControl.files[0])})`;
