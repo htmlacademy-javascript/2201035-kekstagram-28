@@ -1,82 +1,84 @@
 import { shuffle, debounce } from './utils.js';
-import { personalDetails } from './data-exchange.js';
+import { photosDetails } from './api.js';
 
 const photoTemplate = document.querySelector('#picture').content;
-const photosFragment = document.createDocumentFragment();
-const photosContainer = document.querySelector('.pictures');
-const photosFilters = document.querySelector('.img-filters');
-const randomFilter = photosFilters.querySelector('#filter-random');
-const defaultFilter = photosFilters.querySelector('#filter-default');
-const discussedFilter = photosFilters.querySelector('#filter-discussed');
+const photosFragmentNode = document.createDocumentFragment();
+const photosContainerNode = document.querySelector('.pictures');
+const photosFiltersNode = document.querySelector('.img-filters');
+const randomFilterNode = photosFiltersNode.querySelector('#filter-random');
+const defaultFilterNode = photosFiltersNode.querySelector('#filter-default');
+const discussedFilterNode = photosFiltersNode.querySelector('#filter-discussed');
 
 function createPhotos (photoDetails) {
   photoDetails.forEach((currentDetails) => {
     const currentPhoto = photoTemplate.cloneNode(true);
-    const currentImg = currentPhoto.querySelector('.picture__img');
-    const currentLikes = currentPhoto.querySelector('.picture__likes');
-    const currentCommentNumber = currentPhoto.querySelector('.picture__comments');
+    const currentImgNode = currentPhoto.querySelector('.picture__img');
+    const currentLikesNode = currentPhoto.querySelector('.picture__likes');
+    const currentCommentNumberNode = currentPhoto.querySelector('.picture__comments');
 
-    currentImg.src = currentDetails.url;
-    currentLikes.textContent = currentDetails.likes;
-    currentCommentNumber.textContent = currentDetails.comments.length;
+    currentImgNode.src = currentDetails.url;
+    currentLikesNode.textContent = currentDetails.likes;
+    currentCommentNumberNode.textContent = currentDetails.comments.length;
 
-    photosFragment.append(currentPhoto);
+    photosFragmentNode.append(currentPhoto);
   }
   );
-  photosContainer.append(photosFragment);
+  photosContainerNode.append(photosFragmentNode);
 }
 
-function onDefaultFilterClick () {
-  if (defaultFilter.classList.contains('img-filters__button--active')) {
-    return;
-  }
-
-  while (photosContainer.querySelector('.picture')) {
-    photosContainer.querySelector('.picture').remove();
-  }
-
-  photosFilters.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
-  defaultFilter.classList.add('img-filters__button--active');
-  createPhotos(personalDetails);
-}
-
-function compareCommetnsCount (detailsA, detailsB) {
+function compareCommentsCount (detailsA, detailsB) {
   return detailsB.comments.length - detailsA.comments.length;
 }
 
-function onDiscussedFilterClick () {
-  if (discussedFilter.classList.contains('img-filters__button--active')) {
+function onFilterClick (evt) {
+  if (evt.target.classList.contains('img-filters__button--active')) {
+    return false;
+  }
+  photosContainerNode.querySelectorAll('.picture').forEach((item) => item.remove());
+  photosFiltersNode.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
+  evt.target.classList.add('img-filters__button--active');
+  return true;
+}
+
+function onDefaultFilterNodeClick (evt) {
+  const isFilterActive = onFilterClick(evt);
+  if(!isFilterActive) {
     return;
   }
-  while (photosContainer.querySelector('.picture')) {
-    photosContainer.querySelector('.picture').remove();
+
+  onFilterClick(evt);
+  createPhotos(photosDetails);
+}
+
+function onDiscussedFilterNodeClick (evt) {
+  const isFilterActive = onFilterClick(evt);
+  if(!isFilterActive) {
+    return;
   }
 
-  photosFilters.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
-  discussedFilter.classList.add('img-filters__button--active');
+  onFilterClick(evt);
 
-  const discussedPhotos = personalDetails.slice().sort(compareCommetnsCount).slice(0,10);
+  const discussedPhotos = photosDetails.slice().sort(compareCommentsCount);
   createPhotos(discussedPhotos);
 }
 
-function onRandomFilterClick () {
-  while (photosContainer.querySelector('.picture')) {
-    photosContainer.querySelector('.picture').remove();
+function onRandomFilterNodeClick (evt) {
+  const isFilterActive = onFilterClick(evt);
+  if(!isFilterActive) {
+    return;
   }
 
-  if(!randomFilter.classList.contains('img-filters__button--active')) {
-    photosFilters.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
-    randomFilter.classList.add('img-filters__button--active');
-  }
-  const detailsForShuffle = personalDetails.slice();
-  createPhotos(shuffle(detailsForShuffle));
+  onFilterClick(evt);
+
+  const shuffledDetails = shuffle(photosDetails.slice());
+  createPhotos(shuffledDetails.slice(0,10));
 }
 
-function addPhotosFilters () {
-  photosFilters.classList.remove('img-filters--inactive');
-  randomFilter.addEventListener('click', debounce(onRandomFilterClick));
-  defaultFilter.addEventListener('click', debounce(onDefaultFilterClick));
-  discussedFilter.addEventListener('click', debounce(onDiscussedFilterClick));
+function addPhotosFilters() {
+  photosFiltersNode.classList.remove('img-filters--inactive');
+  defaultFilterNode.addEventListener('click', debounce(onDefaultFilterNodeClick));
+  discussedFilterNode.addEventListener('click', debounce(onDiscussedFilterNodeClick));
+  randomFilterNode.addEventListener('click', debounce(onRandomFilterNodeClick));
 }
 
-export{createPhotos, photosContainer, addPhotosFilters};
+export{createPhotos, photosContainerNode, addPhotosFilters};

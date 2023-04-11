@@ -1,11 +1,11 @@
 import {createPhotos, addPhotosFilters} from './create-photos.js';
 import { onUploadedPhotoClose } from './form-processing.js';
 
-let personalDetails;
-
+let photosDetails = [];
 let resultContainer;
 let buttonResultClose;
 let showedResult;
+const API_URL = 'https://28.javascript.pages.academy/kekstagram';
 
 function onAroundSendingResultClick (evt) {
   if (evt.target.closest('.error__inner') || evt.target.closest('.success__inner')) {
@@ -45,43 +45,42 @@ function createDownloadError (errorText) {
   return `<div class ="download-photos-error">${errorText}</div>`;
 }
 
-function onDownloadPhotoErorr (error) {
+function onGetPhotosError (error) {
   document.body.insertAdjacentHTML('beforeend', createDownloadError(`${error} – Ошибка загрузки фотографий других пользователей`));
 
-  const errorContainer = document.querySelector('.download-photos-error');
+  const errorContainerNode = document.querySelector('.download-photos-error');
 
-  errorContainer.style.position = 'absolute';
-  errorContainer.style.top = '1%';
-  errorContainer.style.left = '1%';
-  errorContainer.style.fontSize = '15px';
-  errorContainer.style.padding = '4px';
-  errorContainer.style.border = '2px solid red';
-  errorContainer.style.borderRadius = '5px';
-  errorContainer.style.Maxwidth = '98%';
-  errorContainer.style.textAlign = 'center';
+  errorContainerNode.style.position = 'absolute';
+  errorContainerNode.style.top = '1%';
+  errorContainerNode.style.left = '1%';
+  errorContainerNode.style.fontSize = '15px';
+  errorContainerNode.style.padding = '4px';
+  errorContainerNode.style.border = '2px solid red';
+  errorContainerNode.style.borderRadius = '5px';
+  errorContainerNode.style.Maxwidth = '98%';
+  errorContainerNode.style.textAlign = 'center';
 }
 
-function downloadPhotos () {
-  fetch ('https://28.javascript.pages.academy/kekstagram/data')
+function getPhotos () {
+  fetch (`${API_URL}/data`)
     .then((response)=>{
       if (response.ok) {
         return response.json();
       }
+
       throw new Error (response.status + response.statusText);
     })
     .then((data)=>{
-      personalDetails = data;
-      createPhotos(personalDetails);
+      photosDetails = data;
+      createPhotos(photosDetails);
       addPhotosFilters();
     })
-    .catch((error)=>{
-      onDownloadPhotoErorr(error);
-    });
+    .catch(onGetPhotosError);
 }
 
 
 function sendFormData (formData) {
-  fetch ('https://28.javascript.pages.academy/kekstagram', {
+  return fetch (API_URL, {
     method: 'POST',
     body: formData
   })
@@ -98,4 +97,4 @@ function sendFormData (formData) {
     });
 }
 
-export{personalDetails, downloadPhotos, sendFormData};
+export {photosDetails, getPhotos, sendFormData};
