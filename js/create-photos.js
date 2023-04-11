@@ -31,22 +31,25 @@ function compareCommentsCount (detailsA, detailsB) {
 }
 
 function onFilterClick (evt) {
-  const currentFilter = evt.target;
-  if (currentFilter.classList.contains('img-filters__button--active')) {
-    return;
-  }
-
   photosContainerNode.querySelectorAll('.picture').forEach((item) => item.remove());
   photosFiltersNode.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
-  currentFilter.classList.add('img-filters__button--active');
+  evt.target.classList.add('img-filters__button--active');
 }
 
 function onDefaultFilterNodeClick (evt) {
+  if (evt.target.classList.contains('img-filters__button--active')) {
+    return;
+  }
+
   onFilterClick(evt);
   createPhotos(photosDetails);
 }
 
 function onDiscussedFilterNodeClick (evt) {
+  if (evt.target.classList.contains('img-filters__button--active')) {
+    return;
+  }
+
   onFilterClick(evt);
 
   const discussedPhotos = photosDetails.slice().sort(compareCommentsCount);
@@ -54,6 +57,10 @@ function onDiscussedFilterNodeClick (evt) {
 }
 
 function onRandomFilterNodeClick (evt) {
+  if (evt.target.classList.contains('img-filters__button--active')) {
+    return;
+  }
+
   onFilterClick(evt);
 
   const shuffledDetails = shuffle(photosDetails.slice());

@@ -1,4 +1,4 @@
-import { addClass, getValueFromBrackets } from './utils.js';
+import {addClass, getValueFromBrackets} from './utils.js';
 import {sendFormData} from './api.js';
 
 const formNode = document.querySelector('.img-upload__form');
@@ -122,7 +122,7 @@ function validateHashtagsReg (value) {
   return !hashtagArray.some((hashtag)=> !hashtagReg.test(hashtag));
 }
 
-function validateHashtagsQty (value) {
+function validateHashtagsNumber (value) {
   if (!value) {
     return true;
   }
@@ -139,21 +139,20 @@ function validateHashtagsUniqueness (value) {
   const hashtagArray = value.split(' ');
   let isArrayValid = true;
 
-  hashtagArray.forEach((hashtag)=>{
-
-    if(usedHashtags.includes(hashtag.toLowerCase())){
-      if (hashtag !== ''){
+  for (let i = 0; i < hashtagArray.length; i ++) {
+    if(usedHashtags.includes(hashtagArray[i].toLowerCase())){
+      if (hashtagArray[i] !== ''){
         isArrayValid = false;
+        break;
       }
     }
-    usedHashtags.push(hashtag.toLowerCase());
-  });
-
+    usedHashtags.push(hashtagArray[i].toLowerCase());
+  }
   return isArrayValid;
 }
 
 pristine.addValidator(hashtagInputNode,validateHashtagsReg, 'Хэштэги начинаются с #, не содержат спецсимволы и не превышают 20 символов, разделены одним пробелом');
-pristine.addValidator(hashtagInputNode,validateHashtagsQty, 'Не более 5 хэштэгов');
+pristine.addValidator(hashtagInputNode,validateHashtagsNumber, 'Не более 5 хэштэгов');
 pristine.addValidator(hashtagInputNode,validateHashtagsUniqueness, 'Хэштэги не должны повторяться');
 
 function onMinusClick () {

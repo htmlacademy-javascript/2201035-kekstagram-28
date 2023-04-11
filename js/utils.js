@@ -21,16 +21,17 @@ function getValueFromBrackets (string) {
   }
 }
 
-function shuffle (array) {
-  let m = array.length, t, i;
+function shuffle(array) {
+  let currentIndex = array.length, temporaryValue, randomIndex;
 
-  while (m) {
+  while (0 !== currentIndex) {
 
-    i = Math.floor(Math.random() * m--);
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
 
-    t = array[m];
-    array[m] = array[i];
-    array[i] = t;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
   }
 
   return array;
