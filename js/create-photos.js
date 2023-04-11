@@ -31,13 +31,18 @@ function compareCommentsCount (detailsA, detailsB) {
 }
 
 function onFilterClick (evt) {
+  if (evt.target.classList.contains('img-filters__button--active')) {
+    return false;
+  }
   photosContainerNode.querySelectorAll('.picture').forEach((item) => item.remove());
   photosFiltersNode.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
   evt.target.classList.add('img-filters__button--active');
+  return true;
 }
 
 function onDefaultFilterNodeClick (evt) {
-  if (evt.target.classList.contains('img-filters__button--active')) {
+  const isFilterActive = onFilterClick(evt);
+  if(!isFilterActive) {
     return;
   }
 
@@ -46,7 +51,8 @@ function onDefaultFilterNodeClick (evt) {
 }
 
 function onDiscussedFilterNodeClick (evt) {
-  if (evt.target.classList.contains('img-filters__button--active')) {
+  const isFilterActive = onFilterClick(evt);
+  if(!isFilterActive) {
     return;
   }
 
@@ -57,7 +63,8 @@ function onDiscussedFilterNodeClick (evt) {
 }
 
 function onRandomFilterNodeClick (evt) {
-  if (evt.target.classList.contains('img-filters__button--active')) {
+  const isFilterActive = onFilterClick(evt);
+  if(!isFilterActive) {
     return;
   }
 

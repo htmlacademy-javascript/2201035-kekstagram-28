@@ -48,17 +48,17 @@ function createDownloadError (errorText) {
 function onGetPhotosError (error) {
   document.body.insertAdjacentHTML('beforeend', createDownloadError(`${error} – Ошибка загрузки фотографий других пользователей`));
 
-  const errorContainerNodeNode = document.querySelector('.download-photos-error');
+  const errorContainerNode = document.querySelector('.download-photos-error');
 
-  errorContainerNodeNode.style.position = 'absolute';
-  errorContainerNodeNode.style.top = '1%';
-  errorContainerNodeNode.style.left = '1%';
-  errorContainerNodeNode.style.fontSize = '15px';
-  errorContainerNodeNode.style.padding = '4px';
-  errorContainerNodeNode.style.border = '2px solid red';
-  errorContainerNodeNode.style.borderRadius = '5px';
-  errorContainerNodeNode.style.Maxwidth = '98%';
-  errorContainerNodeNode.style.textAlign = 'center';
+  errorContainerNode.style.position = 'absolute';
+  errorContainerNode.style.top = '1%';
+  errorContainerNode.style.left = '1%';
+  errorContainerNode.style.fontSize = '15px';
+  errorContainerNode.style.padding = '4px';
+  errorContainerNode.style.border = '2px solid red';
+  errorContainerNode.style.borderRadius = '5px';
+  errorContainerNode.style.Maxwidth = '98%';
+  errorContainerNode.style.textAlign = 'center';
 }
 
 function getPhotos () {
