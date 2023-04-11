@@ -1,19 +1,10 @@
-const getRandomNumber = (a, b) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-};
-
-const getRandomArrayElement = (elements) => elements[getRandomNumber(0, elements.length - 1)];
-
-const addClass = function (element, className){
+function addClass (element, className){
   if(!element.classList.contains(className)) {
     element.classList.add(className);
   }
-};
+}
 
-const getValueFromBrackets = function (string) {
+function getValueFromBrackets (string) {
   let value;
   for (let i = 0; i < string.length; i++) {
     if (string[i - 1] === '(') {
@@ -28,7 +19,7 @@ const getValueFromBrackets = function (string) {
       return value;
     }
   }
-};
+}
 
 function shuffle (array) {
   let m = array.length, t, i;
@@ -54,4 +45,4 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-export {getRandomArrayElement, getRandomNumber, addClass, getValueFromBrackets, shuffle, debounce};
+export {addClass, getValueFromBrackets, shuffle, debounce};
