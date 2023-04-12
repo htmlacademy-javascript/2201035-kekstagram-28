@@ -1,5 +1,19 @@
-import {addClass, getValueFromBrackets} from './utils.js';
+import {addClass, getValueFromBrackets, isEscapeKey} from './utils.js';
 import {sendFormData} from './api.js';
+
+const SCALE_STEP = 25;
+const MAX_SCALE_VALUE = 100;
+const MAX_HASHTAG_NUMBER = 5;
+const HASHTAG_REG = /^#[a-zа-яё0-9]{1,19}$/i;
+const Effects = {
+  NONE: 'none',
+  CHROME: 'chrome',
+  MARVIN:'marvin',
+  SEPIA: 'sepia',
+  PHOBOS: 'phobos',
+  HEAT: 'heat'
+};
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
 const formNode = document.querySelector('.img-upload__form');
 const uploadControlNode = formNode.querySelector('#upload-file');
@@ -19,9 +33,8 @@ const effectValueNode = effectLevelContainerNode.querySelector('.effect-level__v
 const effectsListNode = formNode.querySelector('.effects__list');
 const effectNone = effectsListNode.querySelector('#effect-none');
 const submitButtonNode = formNode.querySelector('#upload-submit');
-const fileTypes = ['jpg', 'jpeg', 'png'];
 
-const sliderSettings = {
+const SliderSettings = {
   chrome: {
     range: {
       min: 0,
@@ -116,10 +129,9 @@ function validateHashtagsReg (value) {
     return true;
   }
 
-  const hashtagReg = /^#[a-zа-яё0-9]{1,19}$/i;
   const hashtagArray = value.split(' ');
 
-  return !hashtagArray.some((hashtag)=> !hashtagReg.test(hashtag));
+  return !hashtagArray.some((hashtag)=> !HASHTAG_REG.test(hashtag));
 }
 
 function validateHashtagsNumber (value) {
@@ -128,7 +140,7 @@ function validateHashtagsNumber (value) {
   }
   const hashtagArray = value.split(' ');
 
-  return hashtagArray.length <= 5;
+  return hashtagArray.length <= MAX_HASHTAG_NUMBER;
 }
 
 function validateHashtagsUniqueness (value) {
@@ -156,8 +168,8 @@ pristine.addValidator(hashtagInputNode,validateHashtagsNumber, 'Не более 
 pristine.addValidator(hashtagInputNode,validateHashtagsUniqueness, 'Хэштэги не должны повторяться');
 
 function onMinusClick () {
-  const actualScaleValue = Number(scaleValueNode.value.slice(0,-1)) - 25;
-  if (actualScaleValue < 25) {
+  const actualScaleValue = Number(scaleValueNode.value.slice(0,-1)) - SCALE_STEP;
+  if (actualScaleValue < SCALE_STEP) {
     return;
   }
   uploadedPhotoPreviewNode.style.transform = `scale(${actualScaleValue / 100})`;
@@ -165,8 +177,8 @@ function onMinusClick () {
 }
 
 function onPlusClick () {
-  const actualScaleValue = Number(scaleValueNode.value.slice(0,-1)) + 25;
-  if (actualScaleValue > 100) {
+  const actualScaleValue = Number(scaleValueNode.value.slice(0,-1)) + SCALE_STEP;
+  if (actualScaleValue > MAX_SCALE_VALUE) {
     return;
   }
   uploadedPhotoPreviewNode.style.transform = `scale(${actualScaleValue / 100})`;
@@ -185,7 +197,7 @@ function onEffectPick (evt) {
 
   const pickedEffect = effectItem.querySelector('input');
   uploadedPhotoPreviewNode.className = '';
-  if(pickedEffect.value === 'none') {
+  if(pickedEffect.value === Effects.NONE) {
     effectValueNode.value = '';
     uploadedPhotoPreviewNode.style.filter = '';
     addClass(effectLevelContainerNode, 'hidden');
@@ -195,26 +207,26 @@ function onEffectPick (evt) {
   effectLevelContainerNode.classList.remove('hidden');
   uploadedPhotoPreviewNode.classList.add(`effects__preview--${pickedEffect.value}`);
 
-  noUiSlider.create(effectSliderNode, sliderSettings[pickedEffect.value]);
+  noUiSlider.create(effectSliderNode, SliderSettings[pickedEffect.value]);
   effectSliderNode.noUiSlider.on('update', () =>{
     const sliderValue = effectSliderNode.noUiSlider.get();
     const sliderNumberValue = getValueFromBrackets(sliderValue);
 
     uploadedPhotoPreviewNode.style.filter = sliderValue;
 
-    if (pickedEffect.value === 'chrome' || pickedEffect.value === 'sepia') {
+    if (pickedEffect.value === Effects.CHROME || pickedEffect.value === Effects.SEPIA) {
       effectValueNode.value = `${sliderNumberValue * 100}%`;
     }
 
-    if (pickedEffect.value === 'marvin') {
+    if (pickedEffect.value === Effects.MARVIN) {
       effectValueNode.value = `${sliderNumberValue}%`;
     }
 
-    if (pickedEffect.value === 'phobos') {
+    if (pickedEffect.value === Effects.PHOBOS) {
       effectValueNode.value = `${(sliderNumberValue / 3 * 100).toFixed(0)}%`;
     }
 
-    if (pickedEffect.value === 'heat') {
+    if (pickedEffect.value === Effects.HEAT) {
       effectValueNode.value = `${((sliderNumberValue - 1) / 2 * 100).toFixed(0)}%`;
     }
   });
@@ -232,7 +244,7 @@ function onFormSubmit (evt) {
 }
 
 function onUploadedPhotoEscape (evt) {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     if (hashtagInputNode === document.activeElement || commentInputNode === document.activeElement) {
       return;
     }
@@ -279,7 +291,7 @@ function onUploadedPhotoClose () {
 }
 
 function onPhotoUpload () {
-  const matches = fileTypes.some((it) => uploadControlNode.files[0].name.toLowerCase().endsWith(it));
+  const matches = FILE_TYPES.some((it) => uploadControlNode.files[0].name.toLowerCase().endsWith(it));
   if(!matches) {
     return;
   }

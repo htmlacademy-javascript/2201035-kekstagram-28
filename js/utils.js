@@ -4,6 +4,10 @@ function addClass (element, className){
   }
 }
 
+function isEscapeKey (evt) {
+  return evt.key === 'Escape';
+}
+
 function getValueFromBrackets (string) {
   let value;
   for (let i = 0; i < string.length; i++) {
@@ -46,4 +50,4 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-export {addClass, getValueFromBrackets, shuffle, debounce};
+export {addClass, getValueFromBrackets, shuffle, debounce, isEscapeKey};
