@@ -1,13 +1,13 @@
 import { shuffle, debounce } from './utils.js';
 import { photosDetails } from './api.js';
 
+const MAX_RANDOM_PHOTOS_NUMBER = 10;
+
 const photoTemplate = document.querySelector('#picture').content;
 const photosFragmentNode = document.createDocumentFragment();
 const photosContainerNode = document.querySelector('.pictures');
 const photosFiltersNode = document.querySelector('.img-filters');
-const randomFilterNode = photosFiltersNode.querySelector('#filter-random');
-const defaultFilterNode = photosFiltersNode.querySelector('#filter-default');
-const discussedFilterNode = photosFiltersNode.querySelector('#filter-discussed');
+const photoFilterButtonsNode = photosFiltersNode.querySelector('.img-filters__form');
 
 function createPhotos (photoDetails) {
   photoDetails.forEach((currentDetails) => {
@@ -31,54 +31,32 @@ function compareCommentsCount (detailsA, detailsB) {
 }
 
 function onFilterClick (evt) {
-  if (evt.target.classList.contains('img-filters__button--active')) {
-    return false;
+  const pickedFilter = evt.target;
+  if (pickedFilter.className !== 'img-filters__button') {
+    return;
   }
   photosContainerNode.querySelectorAll('.picture').forEach((item) => item.remove());
   photosFiltersNode.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
-  evt.target.classList.add('img-filters__button--active');
-  return true;
-}
-
-function onDefaultFilterNodeClick (evt) {
-  const isFilterActive = onFilterClick(evt);
-  if(!isFilterActive) {
+  pickedFilter.classList.add('img-filters__button--active');
+  if(pickedFilter.id === 'filter-default') {
+    createPhotos(photosDetails);
     return;
   }
-
-  onFilterClick(evt);
-  createPhotos(photosDetails);
-}
-
-function onDiscussedFilterNodeClick (evt) {
-  const isFilterActive = onFilterClick(evt);
-  if(!isFilterActive) {
+  if(pickedFilter.id === 'filter-random') {
+    const shuffledDetails = shuffle(photosDetails.slice());
+    createPhotos(shuffledDetails.slice(0,MAX_RANDOM_PHOTOS_NUMBER));
     return;
   }
-
-  onFilterClick(evt);
-
-  const discussedPhotos = photosDetails.slice().sort(compareCommentsCount);
-  createPhotos(discussedPhotos);
-}
-
-function onRandomFilterNodeClick (evt) {
-  const isFilterActive = onFilterClick(evt);
-  if(!isFilterActive) {
-    return;
+  if(pickedFilter.id === 'filter-discussed') {
+    const discussedPhotos = photosDetails.slice().sort(compareCommentsCount);
+    createPhotos(discussedPhotos);
   }
 
-  onFilterClick(evt);
-
-  const shuffledDetails = shuffle(photosDetails.slice());
-  createPhotos(shuffledDetails.slice(0,10));
 }
 
 function addPhotosFilters() {
   photosFiltersNode.classList.remove('img-filters--inactive');
-  defaultFilterNode.addEventListener('click', debounce(onDefaultFilterNodeClick));
-  discussedFilterNode.addEventListener('click', debounce(onDiscussedFilterNodeClick));
-  randomFilterNode.addEventListener('click', debounce(onRandomFilterNodeClick));
+  photoFilterButtonsNode.addEventListener('click', debounce(onFilterClick));
 }
 
 export{createPhotos, photosContainerNode, addPhotosFilters};

@@ -1,6 +1,8 @@
 import { photosDetails } from './api.js';
 import { photosContainerNode } from './create-photos.js';
-import { addClass } from './utils.js';
+import { addClass, isEscapeKey } from './utils.js';
+
+const COMMENT_DISPLAY_STEP = 5;
 
 const bigPictureContainerNode = document.querySelector('.big-picture');
 const socialCommentNode = bigPictureContainerNode.querySelector('.social__comment');
@@ -16,10 +18,9 @@ const socialCommentsNode = bigPictureContainerNode.querySelector('.social__comme
 const commentsFragment = document.createDocumentFragment();
 let pictureDetails;
 let numberOfShowedComments = 0;
-const COMMENT_DISPLAY_STEP = 5;
 
 function onBigPictureEscape (evt) {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     evt.preventDefault();
     onBigPictureClose();
   }

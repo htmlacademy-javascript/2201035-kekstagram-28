@@ -1,11 +1,13 @@
 import {createPhotos, addPhotosFilters} from './create-photos.js';
 import { onUploadedPhotoClose } from './form-processing.js';
+import { isEscapeKey } from './utils.js';
+
+const API_URL = 'https://28.javascript.pages.academy/kekstagram';
 
 let photosDetails = [];
 let resultContainer;
 let buttonResultClose;
 let showedResult;
-const API_URL = 'https://28.javascript.pages.academy/kekstagram';
 
 function onAroundSendingResultClick (evt) {
   if (evt.target.closest('.error__inner') || evt.target.closest('.success__inner')) {
@@ -15,7 +17,7 @@ function onAroundSendingResultClick (evt) {
 }
 
 function onSendingResultEscape (evt) {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     evt.preventDefault();
     onSendingResultClose();
   }
