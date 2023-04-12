@@ -6,12 +6,12 @@ const MAX_SCALE_VALUE = 100;
 const MAX_HASHTAG_NUMBER = 5;
 const HASHTAG_REG = /^#[a-zа-яё0-9]{1,19}$/i;
 const Effects = {
-  none: 'none',
-  chrome: 'chrome',
-  marvin:'marvin',
-  sepia: 'sepia',
-  phobos: 'phobos',
-  heat: 'heat'
+  NONE: 'none',
+  CHROME: 'chrome',
+  MARVIN:'marvin',
+  SEPIA: 'sepia',
+  PHOBOS: 'phobos',
+  HEAT: 'heat'
 };
 const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
@@ -197,7 +197,7 @@ function onEffectPick (evt) {
 
   const pickedEffect = effectItem.querySelector('input');
   uploadedPhotoPreviewNode.className = '';
-  if(pickedEffect.value === Effects.none) {
+  if(pickedEffect.value === Effects.NONE) {
     effectValueNode.value = '';
     uploadedPhotoPreviewNode.style.filter = '';
     addClass(effectLevelContainerNode, 'hidden');
@@ -214,19 +214,19 @@ function onEffectPick (evt) {
 
     uploadedPhotoPreviewNode.style.filter = sliderValue;
 
-    if (pickedEffect.value === Effects.chrome || pickedEffect.value === Effects.sepia) {
+    if (pickedEffect.value === Effects.CHROME || pickedEffect.value === Effects.SEPIA) {
       effectValueNode.value = `${sliderNumberValue * 100}%`;
     }
 
-    if (pickedEffect.value === Effects.marvin) {
+    if (pickedEffect.value === Effects.MARVIN) {
       effectValueNode.value = `${sliderNumberValue}%`;
     }
 
-    if (pickedEffect.value === Effects.phobos) {
+    if (pickedEffect.value === Effects.PHOBOS) {
       effectValueNode.value = `${(sliderNumberValue / 3 * 100).toFixed(0)}%`;
     }
 
-    if (pickedEffect.value === Effects.heat) {
+    if (pickedEffect.value === Effects.HEAT) {
       effectValueNode.value = `${((sliderNumberValue - 1) / 2 * 100).toFixed(0)}%`;
     }
   });
